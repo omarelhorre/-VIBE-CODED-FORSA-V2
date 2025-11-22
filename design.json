@@ -1,0 +1,118 @@
+{
+  "header": {
+    "logo": {
+      "text": "Nexcent",
+      "icon": "leaf"
+    },
+    "navigation": [
+      {
+        "label": "Home",
+        "href": "/"
+      },
+      {
+        "label": "Features",
+        "href": "/features"
+      },
+      {
+        "label": "Community",
+        "href": "/community"
+      },
+      {
+        "label": "Blog",
+        "href": "/blog"
+      },
+      {
+        "label": "Pricing",
+        "href": "/pricing"
+      }
+    ],
+    "cta": {
+      "label": "Register Now",
+      "href": "/register",
+      "variant": "primary"
+    }
+  },
+  "hero": {
+    "title": {
+      "line1": "Lessons and insights",
+      "line2": "from 8 years",
+      "highlightLine2": true
+    },
+    "subtitle": "Where to grow your business as a photographer: site or social media?",
+    "cta": {
+      "label": "Register",
+      "href": "/register"
+    },
+    "illustration": {
+      "type": "developer-screen",
+      "alt": "Developer working with code and interface"
+    },
+    "carousel": {
+      "slides": 3,
+      "currentSlide": 0
+    }
+  },
+  "clients": {
+    "title": "Our Clients",
+    "subtitle": "We have been working with some Fortune 500+ clients",
+    "logos": [
+      {
+        "name": "Client 1",
+        "icon": "logo-1"
+      },
+      {
+        "name": "Client 2",
+        "icon": "logo-2"
+      },
+      {
+        "name": "Client 3",
+        "icon": "logo-3"
+      },
+      {
+        "name": "Client 4",
+        "icon": "logo-4"
+      },
+      {
+        "name": "Client 5",
+        "icon": "logo-5"
+      },
+      {
+        "name": "Client 6",
+        "icon": "logo-6"
+      },
+      {
+        "name": "Client 7",
+        "icon": "logo-7"
+      }
+    ]
+  },
+  "features": {
+    "title": "Manage your entire community",
+    "subtitle": "in a single system",
+    "description": "Who is Nextcent suitable for?",
+    "items": [
+      {
+        "icon": "users",
+        "title": "Membership Organisations",
+        "description": "Our membership management software provides full automation of membership renewals and payments"
+      },
+      {
+        "icon": "building",
+        "title": "National Associations",
+        "description": "Our membership management software provides full automation of membership renewals and payments"
+      },
+      {
+        "icon": "group",
+        "title": "Clubs And Groups",
+        "description": "Our membership management software provides full automation of membership renewals and payments"
+      }
+    ]
+  },
+  "theme": {
+    "primaryColor": "#4CAF50",
+    "secondaryColor": "#2E7D32",
+    "backgroundColor": "#F5F7FA",
+    "textColor": "#4D4D4D",
+    "accentColor": "#43A047"
+  }
+}
