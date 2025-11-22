@@ -91,7 +91,7 @@ export default function JoinQueueModal({ isOpen, onClose, department }) {
   }
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+    <div className="fixed inset-0 bg-blue-900/80 backdrop-blur-sm flex items-center justify-center z-50 p-4">
       <div className="bg-white rounded-2xl shadow-xl max-w-md w-full p-6">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-2xl font-bold text-secondary">
