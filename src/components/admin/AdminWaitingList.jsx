@@ -111,21 +111,40 @@ export default function AdminWaitingList() {
     if (!deleteConfirm) return
 
     setDeleting(true)
+    setError('')
+    
     try {
-      const { error } = await supabase
+      console.log('Deleting waiting list entry:', deleteConfirm.id)
+      
+      const { data, error } = await supabase
         .from('waiting_list')
         .delete()
         .eq('id', deleteConfirm.id)
+        .select()
 
-      if (error) throw error
+      if (error) {
+        console.error('Delete error details:', {
+          message: error.message,
+          code: error.code,
+          details: error.details,
+          hint: error.hint
+        })
+        throw error
+      }
 
-      // Remove from local state
-      setWaitingList(waitingList.filter((entry) => entry.id !== deleteConfirm.id))
+      console.log('Delete successful:', data)
+
+      // Remove from local state immediately
+      setWaitingList(prev => prev.filter((entry) => entry.id !== deleteConfirm.id))
       setDeleteConfirm(null)
-      setError('')
+      
+      // Manually refresh to ensure data is up to date
+      setTimeout(() => {
+        fetchWaitingList()
+      }, 500)
     } catch (error) {
       console.error('Error deleting entry:', error)
-      setError('Failed to delete entry. Please try again.')
+      setError(`Failed to delete entry: ${error.message || error.details || 'Please check if DELETE policy is enabled in Supabase.'}`)
     } finally {
       setDeleting(false)
     }

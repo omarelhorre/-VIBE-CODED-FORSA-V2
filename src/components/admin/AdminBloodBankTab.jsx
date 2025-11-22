@@ -74,23 +74,51 @@ export default function AdminBloodBankTab() {
     setError('')
 
     try {
+      console.log('Updating blood bank:', { id: editingItem.id, units: parseInt(units) })
+      
       // Simple update query - same approach as patient dashboard
-      const { error } = await supabase
+      const { data, error } = await supabase
         .from('blood_bank')
         .update({ 
           units: parseInt(units),
           updated_at: new Date().toISOString()
         })
         .eq('id', editingItem.id)
+        .select()
 
-      if (error) throw error
+      if (error) {
+        console.error('Update error details:', {
+          message: error.message,
+          code: error.code,
+          details: error.details,
+          hint: error.hint
+        })
+        throw error
+      }
+
+      console.log('Update successful:', data)
+
+      // Update local state immediately for better UX
+      if (data && data.length > 0) {
+        setBloodBank(prev => 
+          prev.map(item => 
+            item.id === editingItem.id 
+              ? { ...item, units: parseInt(units), updated_at: data[0].updated_at }
+              : item
+          )
+        )
+      }
 
       setEditingItem(null)
       setUnits('')
-      // fetchBloodBank will be called automatically via real-time subscription
+      
+      // Manually refresh to ensure data is up to date
+      setTimeout(() => {
+        fetchBloodBank()
+      }, 500)
     } catch (error) {
       console.error('Error updating blood bank:', error)
-      setError(`Failed to update blood bank: ${error.message || 'Please try again.'}`)
+      setError(`Failed to update blood bank: ${error.message || error.details || 'Please try again.'}`)
     } finally {
       setSaving(false)
     }
