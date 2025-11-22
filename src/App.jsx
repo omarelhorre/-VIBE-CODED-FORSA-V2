@@ -8,6 +8,7 @@ import MapView from './components/map/MapView'
 import LoadingSpinner from './components/common/LoadingSpinner'
 import HospitalCard from './components/hospital/HospitalCard'
 import HospitalDetail from './components/hospital/HospitalDetail'
+import AdminDashboard from './components/admin/AdminDashboard'
 
 function ProtectedRoute({ children }) {
   const { user, loading } = useAuth()
@@ -21,6 +22,26 @@ function ProtectedRoute({ children }) {
   }
 
   return user ? children : <Navigate to="/login" replace />
+}
+
+function AdminProtectedRoute({ children }) {
+  const { user, loading } = useAuth()
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <LoadingSpinner />
+      </div>
+    )
+  }
+
+  // Check if user is admin
+  if (user && (user.role === 'admin' || user.user_metadata?.role === 'admin')) {
+    return children
+  }
+
+  // Redirect non-admin users to login
+  return <Navigate to="/login" replace />
 }
 
 function Home() {
@@ -147,6 +168,14 @@ function App() {
           <Route
             path="/hospital/:hospitalId"
             element={<HospitalDetail />}
+          />
+          <Route
+            path="/admin/dashboard"
+            element={
+              <AdminProtectedRoute>
+                <AdminDashboard />
+              </AdminProtectedRoute>
+            }
           />
         </Routes>
       </div>
