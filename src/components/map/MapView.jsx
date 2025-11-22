@@ -1,29 +1,4 @@
-import { useEffect, useRef } from 'react'
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet'
-import L from 'leaflet'
-import 'leaflet/dist/leaflet.css'
-
-// Fix for default marker icons in React-Leaflet
-delete L.Icon.Default.prototype._getIconUrl
-L.Icon.Default.mergeOptions({
-  iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon-2x.png',
-  iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon.png',
-  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png',
-})
-
-// Custom hospital icon
-const hospitalIcon = new L.Icon({
-  iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-green.png',
-  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png',
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
-  popupAnchor: [1, -34],
-  shadowSize: [41, 41]
-})
-
 export default function MapView() {
-  const mapRef = useRef(null)
-
   // Saniat Rmel Hospital coordinates (Tetouan, Morocco)
   const saniatRmel = [35.5889, -5.3626]
 
@@ -32,25 +7,29 @@ export default function MapView() {
     {
       id: 1,
       name: 'Saniat Rmel Hospital',
-      position: saniatRmel,
+      address: 'Tetouan, Morocco',
+      phone: '+212 539-XXXXXX',
       isMain: true,
     },
     {
       id: 2,
       name: 'Tetouan Medical Center',
-      position: [35.5950, -5.3700],
+      address: 'Tetouan, Morocco',
+      phone: '+212 539-XXXXXX',
       isMain: false,
     },
     {
       id: 3,
       name: 'Ibn Sina Hospital',
-      position: [35.5820, -5.3550],
+      address: 'Tetouan, Morocco',
+      phone: '+212 539-XXXXXX',
       isMain: false,
     },
     {
       id: 4,
       name: 'Al Andalus Clinic',
-      position: [35.5920, -5.3750],
+      address: 'Tetouan, Morocco',
+      phone: '+212 539-XXXXXX',
       isMain: false,
     },
   ]
@@ -58,71 +37,76 @@ export default function MapView() {
   return (
     <div className="min-h-screen bg-background">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="mb-6">
+        <div className="mb-8">
           <h1 className="text-4xl font-bold text-secondary mb-2">Hospital Locations</h1>
-          <p className="text-text">Find Saniat Rmel Hospital and nearby medical facilities</p>
+          <p className="text-text text-lg">Find Saniat Rmel Hospital and nearby medical facilities</p>
         </div>
 
-        <div className="bg-white rounded-xl shadow-sm overflow-hidden">
-          <div style={{ height: '600px', width: '100%' }}>
-            <MapContainer
-              center={saniatRmel}
-              zoom={14}
-              style={{ height: '100%', width: '100%' }}
-              ref={mapRef}
-            >
-              <TileLayer
-                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-              />
-              {hospitals.map((hospital) => (
-                <Marker
-                  key={hospital.id}
-                  position={hospital.position}
-                  icon={hospital.isMain ? hospitalIcon : undefined}
-                >
-                  <Popup>
-                    <div className="p-2">
-                      <h3 className="font-bold text-secondary text-lg mb-1">
-                        {hospital.name}
-                      </h3>
-                      {hospital.isMain && (
-                        <p className="text-sm text-primary font-semibold">
-                          Main Hospital
-                        </p>
-                      )}
-                    </div>
-                  </Popup>
-                </Marker>
-              ))}
-            </MapContainer>
-          </div>
-        </div>
-
-        <div className="mt-6 bg-white rounded-xl shadow-sm p-6">
-          <h2 className="text-xl font-bold text-secondary mb-4">Hospital Information</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {hospitals.map((hospital) => (
-              <div
-                key={hospital.id}
-                className={`p-4 rounded-lg border-2 ${
-                  hospital.isMain
-                    ? 'border-primary bg-primary/5'
-                    : 'border-gray-200 bg-gray-50'
-                }`}
-              >
-                <h3 className="font-bold text-secondary mb-1">{hospital.name}</h3>
-                <p className="text-sm text-text">
-                  Coordinates: {hospital.position[0].toFixed(4)}, {hospital.position[1].toFixed(4)}
-                </p>
-                {hospital.isMain && (
-                  <span className="inline-block mt-2 px-3 py-1 bg-primary text-white text-sm rounded-full">
-                    Main Location
-                  </span>
-                )}
+        {/* Static Map Image with Modern Design */}
+        <div className="bg-gradient-to-br from-primary/10 to-accent/10 rounded-2xl p-8 mb-8">
+          <div className="bg-white rounded-xl shadow-lg p-6">
+            <div className="flex items-center justify-center mb-6">
+              <div className="w-20 h-20 bg-primary rounded-full flex items-center justify-center shadow-lg">
+                <span className="text-white text-4xl">📍</span>
               </div>
-            ))}
+            </div>
+            <div className="text-center">
+              <h2 className="text-2xl font-bold text-secondary mb-2">Saniat Rmel Hospital</h2>
+              <p className="text-text mb-4">Tetouan, Morocco</p>
+              <p className="text-primary font-semibold">Coordinates: 35.5889° N, 5.3626° W</p>
+            </div>
           </div>
+        </div>
+
+        {/* Hospital Cards - Modern Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
+          {hospitals.map((hospital) => (
+            <div
+              key={hospital.id}
+              className={`group relative overflow-hidden rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 ${
+                hospital.isMain
+                  ? 'bg-gradient-to-br from-primary to-accent text-white'
+                  : 'bg-white'
+              }`}
+            >
+              <div className="p-6">
+                <div className="flex items-start justify-between mb-4">
+                  <div className="flex-1">
+                    <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-3 ${
+                      hospital.isMain ? 'bg-white/20' : 'bg-primary/10'
+                    }`}>
+                      <span className="text-2xl">🏥</span>
+                    </div>
+                    <h3 className={`text-xl font-bold mb-2 ${
+                      hospital.isMain ? 'text-white' : 'text-secondary'
+                    }`}>
+                      {hospital.name}
+                    </h3>
+                    {hospital.isMain && (
+                      <span className="inline-block px-3 py-1 bg-white/20 text-white text-sm rounded-full font-semibold mb-3">
+                        Main Location
+                      </span>
+                    )}
+                  </div>
+                </div>
+                <div className={`space-y-2 ${
+                  hospital.isMain ? 'text-white/90' : 'text-text'
+                }`}>
+                  <div className="flex items-center gap-2">
+                    <span className="text-lg">📍</span>
+                    <span className="text-sm">{hospital.address}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-lg">📞</span>
+                    <span className="text-sm">{hospital.phone}</span>
+                  </div>
+                </div>
+              </div>
+              {!hospital.isMain && (
+                <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              )}
+            </div>
+          ))}
         </div>
       </div>
     </div>

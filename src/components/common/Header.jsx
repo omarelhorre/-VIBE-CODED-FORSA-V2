@@ -10,41 +10,58 @@ export default function Header() {
   }
 
   return (
-    <header className="bg-white shadow-sm border-b border-gray-200">
+    <header className="bg-white/80 backdrop-blur-md shadow-lg border-b border-primary/10 sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
-          <Link to="/" className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
-              <span className="text-white text-xl">🏥</span>
+        <div className="flex justify-between items-center h-20">
+          <Link to="/" className="flex items-center space-x-3 group">
+            <div className="w-12 h-12 bg-gradient-to-br from-primary to-accent rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+              <span className="text-white text-2xl">🏥</span>
             </div>
-            <span className="text-xl font-bold text-secondary">Saniat Rmel Hospital</span>
+            <div>
+              <span className="text-2xl font-bold bg-gradient-to-r from-secondary to-primary bg-clip-text text-transparent">
+                Saniat Rmel Hospital
+              </span>
+              <p className="text-xs text-text/70">Patient Portal</p>
+            </div>
           </Link>
 
-          <nav className="hidden md:flex items-center space-x-6">
-            <Link to="/" className="text-text hover:text-primary transition-colors">
+          <nav className="hidden md:flex items-center space-x-1">
+            <Link 
+              to="/" 
+              className="px-4 py-2 text-text hover:text-primary hover:bg-primary/10 rounded-lg transition-all font-medium"
+            >
               Home
             </Link>
             {user && (
               <>
-                <Link to="/dashboard" className="text-text hover:text-primary transition-colors">
+                <Link 
+                  to="/dashboard" 
+                  className="px-4 py-2 text-text hover:text-primary hover:bg-primary/10 rounded-lg transition-all font-medium"
+                >
                   Dashboard
                 </Link>
-                <Link to="/map" className="text-text hover:text-primary transition-colors">
-                  Map
+                <Link 
+                  to="/map" 
+                  className="px-4 py-2 text-text hover:text-primary hover:bg-primary/10 rounded-lg transition-all font-medium"
+                >
+                  Locations
                 </Link>
               </>
             )}
           </nav>
 
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-3">
             {user ? (
               <>
-                <span className="text-sm text-text hidden sm:inline">
-                  {user.email}
-                </span>
+                <div className="hidden sm:flex items-center space-x-2 px-4 py-2 bg-primary/10 rounded-lg">
+                  <div className="w-2 h-2 bg-primary rounded-full animate-pulse"></div>
+                  <span className="text-sm text-text font-medium">
+                    {user.email?.split('@')[0]}
+                  </span>
+                </div>
                 <button
                   onClick={handleLogout}
-                  className="px-4 py-2 bg-secondary text-white rounded-lg hover:bg-opacity-90 transition-colors"
+                  className="px-6 py-2.5 bg-gradient-to-r from-secondary to-primary text-white rounded-xl hover:shadow-lg hover:scale-105 transition-all font-semibold"
                 >
                   Logout
                 </button>
@@ -52,7 +69,7 @@ export default function Header() {
             ) : (
               <Link
                 to="/login"
-                className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-accent transition-colors"
+                className="px-6 py-2.5 bg-gradient-to-r from-primary to-accent text-white rounded-xl hover:shadow-lg hover:scale-105 transition-all font-semibold"
               >
                 Login
               </Link>

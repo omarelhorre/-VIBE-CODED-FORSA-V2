@@ -21,27 +21,30 @@ export default function Dashboard() {
         </div>
 
         {/* Tab Navigation */}
-        <div className="bg-white rounded-xl shadow-sm mb-6">
-          <div className="flex border-b border-gray-200">
+        <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg mb-6 border border-primary/10">
+          <div className="flex">
             {tabs.map((tab) => (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex-1 px-6 py-4 text-center font-semibold transition-all ${
+                className={`flex-1 px-6 py-5 text-center font-semibold transition-all relative ${
                   activeTab === tab.id
-                    ? 'text-primary border-b-2 border-primary bg-primary/5'
-                    : 'text-text hover:text-primary hover:bg-gray-50'
+                    ? 'text-primary'
+                    : 'text-text hover:text-primary'
                 }`}
               >
-                <span className="mr-2">{tab.icon}</span>
+                <span className="mr-2 text-xl">{tab.icon}</span>
                 {tab.label}
+                {activeTab === tab.id && (
+                  <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-primary to-accent rounded-t-full"></div>
+                )}
               </button>
             ))}
           </div>
         </div>
 
         {/* Tab Content */}
-        <div className="bg-white rounded-xl shadow-sm p-6">
+        <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg p-8 border border-primary/10 animate-fade-in">
           {activeTab === 'waiting' && <WaitingListTab />}
           {activeTab === 'blood' && <BloodBankTab />}
           {activeTab === 'doctors' && <DoctorsTab />}

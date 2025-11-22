@@ -6,7 +6,6 @@ import LoadingSpinner from '../common/LoadingSpinner'
 export default function SignupForm() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [confirmPassword, setConfirmPassword] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const [success, setSuccess] = useState(false)
@@ -16,11 +15,6 @@ export default function SignupForm() {
   const handleSubmit = async (e) => {
     e.preventDefault()
     setError('')
-
-    if (password !== confirmPassword) {
-      setError('Passwords do not match')
-      return
-    }
 
     if (password.length < 6) {
       setError('Password must be at least 6 characters')
@@ -47,27 +41,31 @@ export default function SignupForm() {
 
   if (success) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background to-primary/5 px-4">
-        <div className="max-w-md w-full bg-white rounded-2xl shadow-xl p-8 text-center">
-          <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center mx-auto mb-4">
-            <span className="text-white text-3xl">✓</span>
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-primary/5 to-accent/10 px-4">
+        <div className="max-w-md w-full bg-white/90 backdrop-blur-sm rounded-3xl shadow-2xl p-8 text-center border border-primary/10 animate-fade-in">
+          <div className="w-20 h-20 bg-gradient-to-br from-primary to-accent rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg">
+            <span className="text-white text-4xl">✓</span>
           </div>
-          <h2 className="text-2xl font-bold text-secondary mb-2">Account Created!</h2>
-          <p className="text-text">Redirecting to dashboard...</p>
+          <h2 className="text-3xl font-bold bg-gradient-to-r from-secondary to-primary bg-clip-text text-transparent mb-3">
+            Account Created!
+          </h2>
+          <p className="text-text text-lg">Redirecting to dashboard...</p>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background to-primary/5 px-4">
-      <div className="max-w-md w-full bg-white rounded-2xl shadow-xl p-8">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-primary/5 to-accent/10 px-4 py-12">
+      <div className="max-w-md w-full bg-white/90 backdrop-blur-sm rounded-3xl shadow-2xl p-8 border border-primary/10 animate-fade-in">
         <div className="text-center mb-8">
-          <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center mx-auto mb-4">
-            <span className="text-white text-3xl">🏥</span>
+          <div className="w-20 h-20 bg-gradient-to-br from-primary to-accent rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg">
+            <span className="text-white text-4xl">🏥</span>
           </div>
-          <h1 className="text-3xl font-bold text-secondary mb-2">Create Account</h1>
-          <p className="text-text">Sign up for patient portal access</p>
+          <h1 className="text-4xl font-bold bg-gradient-to-r from-secondary to-primary bg-clip-text text-transparent mb-3">
+            Create Account
+          </h1>
+          <p className="text-text text-lg">Sign up for patient portal access</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
@@ -108,25 +106,10 @@ export default function SignupForm() {
             />
           </div>
 
-          <div>
-            <label htmlFor="confirmPassword" className="block text-sm font-medium text-text mb-2">
-              Confirm Password
-            </label>
-            <input
-              id="confirmPassword"
-              type="password"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              required
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
-              placeholder="Confirm your password"
-            />
-          </div>
-
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-primary text-white py-3 rounded-lg font-semibold hover:bg-accent transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+            className="w-full bg-gradient-to-r from-primary to-accent text-white py-4 rounded-xl font-semibold hover:shadow-lg hover:scale-[1.02] transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 flex items-center justify-center text-lg"
           >
             {loading ? <LoadingSpinner size="sm" /> : 'Sign Up'}
           </button>
