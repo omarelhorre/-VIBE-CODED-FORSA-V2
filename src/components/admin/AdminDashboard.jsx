@@ -1,9 +1,17 @@
+import { useState } from 'react'
 import { useAuth } from '../../contexts/AuthContext'
 import AdminWaitingList from './AdminWaitingList'
+import AdminBloodBankTab from './AdminBloodBankTab'
 
 export default function AdminDashboard() {
   const { user } = useAuth()
   const hospitalName = user?.hospitalName || 'Hospital'
+  const [activeTab, setActiveTab] = useState('waiting')
+
+  const tabs = [
+    { id: 'waiting', label: 'Waiting List' },
+    { id: 'blood', label: 'Blood Bank' },
+  ]
 
   return (
     <div className="min-h-screen bg-background">
@@ -25,8 +33,32 @@ export default function AdminDashboard() {
           </div>
         </div>
 
+        {/* Tab Navigation */}
+        <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg mb-6 border border-primary/10">
+          <div className="flex">
+            {tabs.map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`flex-1 px-6 py-5 text-center font-semibold transition-all relative ${
+                  activeTab === tab.id
+                    ? 'text-primary'
+                    : 'text-text hover:text-primary'
+                }`}
+              >
+                {tab.label}
+                {activeTab === tab.id && (
+                  <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-primary to-accent rounded-t-full"></div>
+                )}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Tab Content */}
         <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg p-8 border border-primary/10 animate-fade-in">
-          <AdminWaitingList />
+          {activeTab === 'waiting' && <AdminWaitingList />}
+          {activeTab === 'blood' && <AdminBloodBankTab />}
         </div>
       </div>
     </div>

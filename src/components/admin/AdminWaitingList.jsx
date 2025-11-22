@@ -7,6 +7,8 @@ export default function AdminWaitingList() {
   const [departments, setDepartments] = useState({})
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+  const [deleteConfirm, setDeleteConfirm] = useState(null)
+  const [deleting, setDeleting] = useState(false)
 
   useEffect(() => {
     fetchWaitingList()
@@ -101,6 +103,38 @@ export default function AdminWaitingList() {
     })
   }
 
+  const handleDeleteClick = (entry) => {
+    setDeleteConfirm(entry)
+  }
+
+  const handleDeleteConfirm = async () => {
+    if (!deleteConfirm) return
+
+    setDeleting(true)
+    try {
+      const { error } = await supabase
+        .from('waiting_list')
+        .delete()
+        .eq('id', deleteConfirm.id)
+
+      if (error) throw error
+
+      // Remove from local state
+      setWaitingList(waitingList.filter((entry) => entry.id !== deleteConfirm.id))
+      setDeleteConfirm(null)
+      setError('')
+    } catch (error) {
+      console.error('Error deleting entry:', error)
+      setError('Failed to delete entry. Please try again.')
+    } finally {
+      setDeleting(false)
+    }
+  }
+
+  const handleDeleteCancel = () => {
+    setDeleteConfirm(null)
+  }
+
   if (loading) {
     return (
       <div className="flex justify-center items-center py-12">
@@ -136,6 +170,7 @@ export default function AdminWaitingList() {
                 <th className="px-6 py-4 text-left text-sm font-semibold">Reason</th>
                 <th className="px-6 py-4 text-left text-sm font-semibold">Status</th>
                 <th className="px-6 py-4 text-left text-sm font-semibold">Created At</th>
+                <th className="px-6 py-4 text-left text-sm font-semibold">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200">
@@ -158,10 +193,59 @@ export default function AdminWaitingList() {
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="text-sm text-text">{formatDate(entry.created_at)}</div>
                   </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <button
+                      onClick={() => handleDeleteClick(entry)}
+                      className="px-4 py-2 bg-gradient-to-r from-primary to-accent text-white rounded-lg hover:shadow-lg transition-all font-medium text-sm"
+                    >
+                      Delete
+                    </button>
+                  </td>
                 </tr>
               ))}
             </tbody>
           </table>
+        </div>
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {deleteConfirm && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl shadow-xl max-w-md w-full p-6">
+            <div className="mb-6">
+              <h2 className="text-2xl font-bold text-secondary mb-2">Confirm Deletion</h2>
+              <p className="text-text">
+                Are you sure you want to delete the waiting list entry for{' '}
+                <span className="font-semibold">{deleteConfirm.patient_name}</span>?
+              </p>
+              <p className="text-sm text-text/70 mt-2">
+                This action cannot be undone.
+              </p>
+            </div>
+            <div className="flex space-x-3">
+              <button
+                onClick={handleDeleteCancel}
+                disabled={deleting}
+                className="flex-1 px-4 py-3 border border-gray-300 text-text rounded-lg hover:bg-gray-50 transition-colors font-medium disabled:opacity-50"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleDeleteConfirm}
+                disabled={deleting}
+                className="flex-1 px-4 py-3 bg-gradient-to-r from-primary to-accent text-white rounded-lg hover:shadow-lg transition-all font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+              >
+                {deleting ? (
+                  <>
+                    <LoadingSpinner size="sm" />
+                    <span className="ml-2">Deleting...</span>
+                  </>
+                ) : (
+                  'Confirm Delete'
+                )}
+              </button>
+            </div>
+          </div>
         </div>
       )}
 

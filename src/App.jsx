@@ -207,11 +207,7 @@ function App() {
             />
             <Route
               path="/map"
-              element={
-                <ProtectedRoute>
-                  <MapView />
-                </ProtectedRoute>
-              }
+              element={<MapView />}
             />
             <Route
               path="/hospital/:hospitalId"
