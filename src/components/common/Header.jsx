@@ -19,7 +19,7 @@ export default function Header() {
             </div>
             <div>
               <span className="text-2xl font-bold bg-gradient-to-r from-secondary to-primary bg-clip-text text-transparent">
-                Saniat Rmel Hospital
+                Sarii Space
               </span>
             </div>
           </Link>
