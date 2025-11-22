@@ -23,8 +23,15 @@ function ProtectedRoute({ children }) {
 
 function Home() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-primary/5 to-accent/10">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+    <div className="min-h-screen relative overflow-hidden">
+      {/* Dynamic Background */}
+      <div className="absolute inset-0 bg-gradient-to-br from-background via-primary/5 to-accent/10">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(76,175,80,0.1),transparent_50%)] animate-pulse"></div>
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_80%,rgba(67,160,71,0.1),transparent_50%)] animate-pulse" style={{ animationDelay: '1s' }}></div>
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(46,125,50,0.05),transparent_50%)] animate-pulse" style={{ animationDelay: '2s' }}></div>
+      </div>
+      
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
         <div className="text-center mb-20 animate-fade-in">
           <div className="w-32 h-32 bg-gradient-to-br from-primary to-accent rounded-3xl flex items-center justify-center mx-auto mb-8 shadow-2xl transform hover:scale-110 transition-transform">
             <span className="text-white text-6xl">🏥</span>
@@ -35,20 +42,6 @@ function Home() {
           <p className="text-2xl text-text mb-12 max-w-2xl mx-auto">
             Your trusted healthcare partner in Tetouan, Morocco
           </p>
-          <div className="flex justify-center gap-6">
-            <a
-              href="/login"
-              className="px-10 py-4 bg-gradient-to-r from-primary to-accent text-white rounded-2xl font-semibold hover:shadow-2xl hover:scale-105 transition-all text-lg"
-            >
-              Patient Login
-            </a>
-            <a
-              href="/signup"
-              className="px-10 py-4 bg-white text-primary border-2 border-primary rounded-2xl font-semibold hover:bg-primary/5 hover:shadow-xl hover:scale-105 transition-all text-lg"
-            >
-              Create Account
-            </a>
-          </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-20">
