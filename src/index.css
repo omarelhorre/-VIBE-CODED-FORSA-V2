@@ -10,6 +10,7 @@
 
 html {
   scroll-behavior: smooth;
+  scroll-padding-top: 80px;
 }
 
 body {
@@ -25,22 +26,66 @@ body {
   min-height: 100vh;
 }
 
-/* Custom scrollbar */
+/* Modern Custom Scrollbar */
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 16px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #f1f1f1;
+  background: rgba(241, 241, 241, 0.7);
+  border-radius: 10px;
+  backdrop-filter: blur(10px);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, #4CAF50 0%, #43A047 100%);
-  border-radius: 4px;
+  background: linear-gradient(180deg, #4CAF50 0%, #2E7D32 100%);
+  border-radius: 10px;
+  border: 3px solid rgba(76, 175, 80, 0.3);
+  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.1), 0 0 10px rgba(76, 175, 80, 0.2);
+  transition: all 0.3s ease;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, #43A047 0%, #2E7D32 100%);
+  background: linear-gradient(180deg, #2E7D32 0%, #1B5E20 100%);
+  border-color: rgba(76, 175, 80, 0.6);
+  box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.15), 0 0 15px rgba(76, 175, 80, 0.4);
+}
+
+::-webkit-scrollbar-thumb:active {
+  background: linear-gradient(180deg, #1B5E20 0%, #0F3D12 100%);
+}
+
+/* Dark mode scrollbar - Simplified */
+.dark ::-webkit-scrollbar-track {
+  background: rgba(15, 23, 42, 0.9);
+  backdrop-filter: blur(10px);
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #10b981 0%, #059669 100%);
+  border: 3px solid rgba(16, 185, 129, 0.3);
+  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.2), 0 0 10px rgba(16, 185, 129, 0.3);
+  transition: all 0.3s ease;
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #059669 0%, #047857 100%);
+  border-color: rgba(16, 185, 129, 0.6);
+  box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.3), 0 0 15px rgba(16, 185, 129, 0.5);
+}
+
+.dark ::-webkit-scrollbar-thumb:active {
+  background: linear-gradient(180deg, #047857 0%, #065f46 100%);
+}
+
+/* Firefox scrollbar */
+html {
+  scrollbar-width: auto; /* auto or thin */
+  scrollbar-color: #4CAF50 #f1f1f1; /* thumb and track color */
+}
+
+.dark html {
+  scrollbar-color: #10b981 #1e293b;
 }
 
 /* Modern animations */
@@ -115,5 +160,79 @@ body {
   100% {
     transform: translateX(200%) translateY(200%) rotate(45deg);
   }
+}
+
+/* Gradient animation */
+@keyframes gradient-x {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+.animate-gradient-x {
+  background-size: 200% 200%;
+  animation: gradient-x 3s ease infinite;
+}
+
+/* Pulse slow animation */
+@keyframes pulse-slow {
+  0%, 100% {
+    opacity: 0.7;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.animate-pulse-slow {
+  animation: pulse-slow 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Login Button Success Animations */
+@keyframes zoom-out-in {
+  0% { transform: scale(1); }
+  50% { transform: scale(0.95); }
+  100% { transform: scale(1); }
+}
+
+@keyframes rotate-zoom-in {
+  0% {
+    transform: scale(0) rotate(-180deg);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.2) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1) rotate(0deg);
+    opacity: 1;
+  }
+}
+
+.animate-zoom-out-in {
+  animation: zoom-out-in 0.4s ease-out forwards;
+}
+
+.animate-rotate-zoom-in {
+  animation: rotate-zoom-in 0.6s cubic-bezier(0.68, -0.55, 0.27, 1.55) forwards;
+  opacity: 1;
+}
+
+/* Shake animation for modals */
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-3px); }
+  20%, 40%, 60%, 80% { transform: translateX(3px); }
+}
+
+.animate-shake {
+  animation: shake 0.4s cubic-bezier(0.36, 0.07, 0.19, 0.97) forwards;
 }
 

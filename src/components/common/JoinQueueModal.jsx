@@ -17,24 +17,24 @@ export default function JoinQueueModal({ isOpen, onClose, department }) {
   // Check authentication before allowing queue join
   if (!user) {
     return (
-      <div className="fixed inset-0 bg-black/70 backdrop-blur-md flex items-center justify-center z-50 p-4">
-        <div className="bg-white rounded-2xl shadow-xl max-w-md w-full p-6">
+      <div className="fixed inset-0 bg-black/70 dark:bg-black/80 backdrop-blur-md flex items-center justify-center z-50 p-4">
+        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl dark:shadow-2xl max-w-md w-full p-6 border border-gray-200 dark:border-gray-700">
           <div className="flex justify-between items-center mb-6">
-            <h2 className="text-2xl font-bold text-secondary">Authentication Required</h2>
+            <h2 className="text-2xl font-bold text-secondary dark:text-gray-200">Authentication Required</h2>
             <button
               onClick={onClose}
-              className="text-text hover:text-primary text-2xl"
+              className="text-text dark:text-gray-300 hover:text-primary dark:hover:text-primary text-2xl"
             >
               ×
             </button>
           </div>
-          <p className="text-text mb-6">
+          <p className="text-text dark:text-gray-300 mb-6">
             You need to be logged in to join a waiting list. Please sign in to continue.
           </p>
           <div className="flex space-x-3">
             <button
               onClick={onClose}
-              className="flex-1 px-4 py-3 border border-gray-300 text-text rounded-lg hover:bg-gray-50 transition-colors"
+              className="flex-1 px-4 py-3 border border-gray-300 dark:border-gray-600 text-text dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
             >
               Cancel
             </button>
@@ -91,15 +91,15 @@ export default function JoinQueueModal({ isOpen, onClose, department }) {
   }
 
   return (
-    <div className="fixed inset-0 bg-black/70 backdrop-blur-md flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-2xl shadow-xl max-w-md w-full p-6">
+    <div className="fixed top-0 left-0 right-0 bottom-0 w-screen h-screen bg-black/70 dark:bg-black/80 backdrop-blur-md flex items-center justify-center z-50 p-4">
+      <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl dark:shadow-2xl max-w-md w-full p-6 border border-gray-200 dark:border-gray-700">
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-bold text-secondary">
+          <h2 className="text-2xl font-bold text-secondary dark:text-gray-200">
             Join {department.name} Queue
           </h2>
           <button
             onClick={onClose}
-            className="text-text hover:text-primary text-2xl"
+            className="text-text dark:text-gray-300 hover:text-primary dark:hover:text-primary text-2xl"
           >
             ×
           </button>
@@ -107,13 +107,13 @@ export default function JoinQueueModal({ isOpen, onClose, department }) {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           {error && (
-            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
+            <div className="bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 px-4 py-3 rounded-lg">
               {error}
             </div>
           )}
 
           <div>
-            <label htmlFor="patientName" className="block text-sm font-medium text-text mb-2">
+            <label htmlFor="patientName" className="block text-sm font-medium text-text dark:text-gray-300 mb-2">
               Patient Name
             </label>
             <input
@@ -122,13 +122,13 @@ export default function JoinQueueModal({ isOpen, onClose, department }) {
               value={patientName}
               onChange={(e) => setPatientName(e.target.value)}
               required
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
+              className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-800/50 dark:text-gray-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
               placeholder="Enter patient name"
             />
           </div>
 
           <div>
-            <label htmlFor="reason" className="block text-sm font-medium text-text mb-2">
+            <label htmlFor="reason" className="block text-sm font-medium text-text dark:text-gray-300 mb-2">
               Reason for Visit
             </label>
             <textarea
@@ -137,7 +137,7 @@ export default function JoinQueueModal({ isOpen, onClose, department }) {
               onChange={(e) => setReason(e.target.value)}
               required
               rows={4}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all resize-none"
+              className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-800/50 dark:text-gray-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all resize-none"
               placeholder="Describe the reason for your visit"
             />
           </div>
@@ -146,7 +146,7 @@ export default function JoinQueueModal({ isOpen, onClose, department }) {
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 px-4 py-3 border border-gray-300 text-text rounded-lg hover:bg-gray-50 transition-colors"
+              className="flex-1 px-4 py-3 border border-gray-300 dark:border-gray-600 text-text dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
             >
               Cancel
             </button>

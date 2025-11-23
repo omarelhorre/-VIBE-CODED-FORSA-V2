@@ -81,8 +81,8 @@ export default function DoctorsTab() {
   return (
     <div>
       <div className="mb-6">
-        <h2 className="text-2xl font-bold text-secondary mb-2">Available Doctors</h2>
-        <p className="text-text">Find and contact our medical professionals</p>
+        <h2 className="text-2xl font-bold text-secondary dark:text-gray-200 mb-2">Available Doctors</h2>
+        <p className="text-text dark:text-gray-300">Find and contact our medical professionals</p>
       </div>
 
       {/* Filters */}
@@ -93,14 +93,14 @@ export default function DoctorsTab() {
             placeholder="Search by name or specialization..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none"
+            className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 dark:bg-gray-800/50 dark:text-gray-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none"
           />
         </div>
         <div className="sm:w-48">
           <select
             value={selectedDepartment}
             onChange={(e) => setSelectedDepartment(e.target.value)}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none"
+            className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 dark:bg-gray-800/50 dark:text-gray-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none"
           >
             <option value="all">All Departments</option>
             {departments.map((dept) => (
@@ -117,14 +117,14 @@ export default function DoctorsTab() {
         {filteredDoctors.map((doctor) => (
           <div
             key={doctor.id}
-            className="border-2 border-gray-200 rounded-xl p-6 hover:shadow-lg transition-all bg-white/20 backdrop-blur-sm hover:bg-white/30"
+            className="border-2 border-gray-200 dark:border-gray-700 rounded-xl p-6 hover:shadow-lg transition-all bg-white/20 dark:bg-gray-800/20 backdrop-blur-sm hover:bg-white/30 dark:hover:bg-gray-800/30"
           >
             <div className="flex items-start justify-between mb-4">
               <div className="flex-1">
-                <h3 className="text-xl font-bold text-secondary mb-1">{doctor.name}</h3>
-                <p className="text-primary font-semibold mb-2">{doctor.specialization}</p>
+                <h3 className="text-xl font-bold text-secondary dark:text-gray-200 mb-1">{doctor.name}</h3>
+                <p className="text-primary dark:text-primary font-semibold mb-2">{doctor.specialization}</p>
                 {doctor.department_name && (
-                  <p className="text-sm text-text">{doctor.department_name} Department</p>
+                  <p className="text-sm text-text dark:text-gray-400">{doctor.department_name} Department</p>
                 )}
               </div>
               <div className="ml-4">
@@ -139,8 +139,8 @@ export default function DoctorsTab() {
               <span
                 className={`px-3 py-1 rounded-full text-sm font-semibold ${
                   doctor.available
-                    ? 'bg-green-100 text-green-800'
-                    : 'bg-red-100 text-red-800'
+                    ? 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300'
+                    : 'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300'
                 }`}
               >
                 {doctor.available ? 'Available' : 'Unavailable'}
@@ -151,7 +151,7 @@ export default function DoctorsTab() {
       </div>
 
       {filteredDoctors.length === 0 && (
-        <div className="text-center py-12 text-text">
+        <div className="text-center py-12 text-text dark:text-gray-400">
           <p>No doctors found matching your criteria.</p>
         </div>
       )}

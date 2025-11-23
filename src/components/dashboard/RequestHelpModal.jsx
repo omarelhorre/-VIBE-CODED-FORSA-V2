@@ -10,11 +10,11 @@ function Modal({ isOpen, onClose, children }) {
 
   return (
     <div 
-      className="fixed inset-0 bg-black/70 backdrop-blur-md flex items-center justify-center z-50 p-4" 
+      className="fixed top-0 left-0 right-0 bottom-0 w-screen h-screen bg-black/70 dark:bg-black/80 backdrop-blur-md flex items-center justify-center z-50 p-4" 
       onClick={onClose}
     >
       <div 
-        className="bg-white rounded-2xl shadow-xl max-w-md w-full p-8" 
+        className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl dark:shadow-2xl max-w-md w-full p-8 border border-gray-200 dark:border-gray-700" 
         onClick={(e) => e.stopPropagation()}
       >
         {children}
@@ -132,14 +132,14 @@ export default function RequestHelpModal({ isOpen, onClose }) {
     return (
       <Modal isOpen={isOpen} onClose={handleClose}>
         <div className="text-center">
-          <div className="bg-green-50 border-2 border-green-200 rounded-xl p-6 mb-6">
+          <div className="bg-green-50 dark:bg-green-900/30 border-2 border-green-200 dark:border-green-800 rounded-xl p-6 mb-6">
             <div className="flex items-center justify-center mb-3">
-              <i className="fas fa-check-circle text-green-600 text-3xl"></i>
+              <i className="fas fa-check-circle text-green-600 dark:text-green-400 text-3xl"></i>
             </div>
-            <p className="text-lg font-semibold text-green-800">
+            <p className="text-lg font-semibold text-green-800 dark:text-green-300">
               Help is on their way!
             </p>
-            <p className="text-sm text-green-700 mt-2">
+            <p className="text-sm text-green-700 dark:text-green-400 mt-2">
               Medical staff will be with you shortly.
             </p>
           </div>
@@ -161,31 +161,31 @@ export default function RequestHelpModal({ isOpen, onClose }) {
       <Modal isOpen={isOpen} onClose={handleClose}>
         <div>
           <div className="text-center mb-6">
-            <div className="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <i className="fas fa-exclamation-triangle text-red-600 text-4xl"></i>
+            <div className="w-20 h-20 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+              <i className="fas fa-exclamation-triangle text-red-600 dark:text-red-400 text-4xl"></i>
             </div>
             
-            <h2 className="text-2xl font-bold text-secondary mb-4">
+            <h2 className="text-2xl font-bold text-secondary dark:text-gray-200 mb-4">
               Confirm Help Request
             </h2>
             
             <div className="mb-4">
-              <p className="text-text mb-2">Request help from</p>
-              <p className="text-2xl font-bold text-red-600">
+              <p className="text-text dark:text-gray-300 mb-2">Request help from</p>
+              <p className="text-2xl font-bold text-red-600 dark:text-red-500">
                 {hospitalName}
               </p>
             </div>
           </div>
 
           {description && (
-            <div className="mb-6 bg-gray-50 rounded-lg p-4 border border-gray-200">
-              <p className="text-sm font-medium text-text mb-2">Description:</p>
-              <p className="text-sm text-text whitespace-pre-wrap">{description}</p>
+            <div className="mb-6 bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4 border border-gray-200 dark:border-gray-600">
+              <p className="text-sm font-medium text-text dark:text-gray-300 mb-2">Description:</p>
+              <p className="text-sm text-text dark:text-gray-300 whitespace-pre-wrap">{description}</p>
             </div>
           )}
 
           {error && (
-            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-4">
+            <div className="bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 px-4 py-3 rounded-lg mb-4">
               {error}
             </div>
           )}
@@ -194,7 +194,7 @@ export default function RequestHelpModal({ isOpen, onClose }) {
             <button
               onClick={handleCancel}
               disabled={submitting}
-              className="flex-1 px-4 py-3 border border-gray-300 text-text rounded-lg hover:bg-gray-50 transition-colors font-medium disabled:opacity-50"
+              className="flex-1 px-4 py-3 border border-gray-300 dark:border-gray-600 text-text dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors font-medium disabled:opacity-50"
             >
               Back
             </button>
@@ -239,24 +239,24 @@ export default function RequestHelpModal({ isOpen, onClose }) {
     <Modal isOpen={isOpen} onClose={handleClose}>
       <div>
         <div className="text-center mb-6">
-          <div className="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-            <i className="fas fa-exclamation-triangle text-red-600 text-4xl"></i>
+          <div className="w-20 h-20 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+            <i className="fas fa-exclamation-triangle text-red-600 dark:text-red-400 text-4xl"></i>
           </div>
           
-          <h2 className="text-2xl font-bold text-secondary mb-4">
+          <h2 className="text-2xl font-bold text-secondary dark:text-gray-200 mb-4">
             Request Help
           </h2>
           
           <div className="mb-6">
-            <p className="text-text mb-2">Request help from</p>
-            <p className="text-2xl font-bold text-red-600">
+            <p className="text-text dark:text-gray-300 mb-2">Request help from</p>
+            <p className="text-2xl font-bold text-red-600 dark:text-red-500">
               {hospitalName}
             </p>
           </div>
         </div>
 
         <div className="mb-6">
-          <label htmlFor="description" className="block text-sm font-medium text-text mb-2">
+          <label htmlFor="description" className="block text-sm font-medium text-text dark:text-gray-300 mb-2">
             Description (Optional)
           </label>
           <textarea
@@ -266,9 +266,9 @@ export default function RequestHelpModal({ isOpen, onClose }) {
             onChange={(e) => setDescription(e.target.value)}
             rows={4}
             placeholder="Please describe what kind of help you need..."
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none resize-none"
+            className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-800/50 dark:text-gray-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none resize-none"
           />
-          <p className="text-xs text-text/70 mt-1">
+          <p className="text-xs text-text/70 dark:text-gray-400 mt-1">
             Provide details about your situation to help staff assist you better.
           </p>
         </div>
@@ -276,7 +276,7 @@ export default function RequestHelpModal({ isOpen, onClose }) {
         <div className="flex space-x-3">
           <button
             onClick={handleClose}
-            className="flex-1 px-4 py-3 border border-gray-300 text-text rounded-lg hover:bg-gray-50 transition-colors font-medium"
+            className="flex-1 px-4 py-3 border border-gray-300 dark:border-gray-600 text-text dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors font-medium"
           >
             Cancel
           </button>

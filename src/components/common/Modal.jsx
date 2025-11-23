@@ -20,7 +20,11 @@ const Modal = ({ isOpen, onClose, title, children, style = {} }) => {
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    width: '100vw',
+    height: '100vh',
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    backdropFilter: 'blur(8px)',
+    WebkitBackdropFilter: 'blur(8px)',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
@@ -36,6 +40,7 @@ const Modal = ({ isOpen, onClose, title, children, style = {} }) => {
     maxHeight: '90vh',
     overflow: 'auto',
     boxShadow: '0 10px 40px rgba(0,0,0,0.3)',
+    animation: 'shake 0.5s cubic-bezier(0.36, 0.07, 0.19, 0.97) forwards',
     ...style
   };
 

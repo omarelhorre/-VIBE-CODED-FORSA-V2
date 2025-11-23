@@ -55,11 +55,11 @@ export default function BloodBankTab() {
   const getStatusColor = (status) => {
     switch (status) {
       case 'critical':
-        return 'bg-red-50 border-red-300 text-red-800'
+        return 'bg-red-50 dark:bg-red-900/30 border-red-300 dark:border-red-700 text-red-800 dark:text-red-300'
       case 'low':
-        return 'bg-yellow-50 border-yellow-300 text-yellow-800'
+        return 'bg-yellow-50 dark:bg-yellow-900/30 border-yellow-300 dark:border-yellow-700 text-yellow-800 dark:text-yellow-300'
       default:
-        return 'bg-green-50 border-green-300 text-green-800'
+        return 'bg-green-50 dark:bg-green-900/30 border-green-300 dark:border-green-700 text-green-800 dark:text-green-300'
     }
   }
 
@@ -74,8 +74,8 @@ export default function BloodBankTab() {
   return (
     <div>
       <div className="mb-6">
-        <h2 className="text-2xl font-bold text-secondary mb-2">Blood Bank Inventory</h2>
-        <p className="text-text">Current blood type availability</p>
+        <h2 className="text-2xl font-bold text-secondary dark:text-gray-200 mb-2">Blood Bank Inventory</h2>
+        <p className="text-text dark:text-gray-300">Current blood type availability</p>
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -85,18 +85,18 @@ export default function BloodBankTab() {
           return (
             <div
               key={item.id}
-              className={`border-2 rounded-xl p-6 text-center bg-white/20 backdrop-blur-sm ${getStatusColor(status)}`}
+              className={`border-2 rounded-xl p-6 text-center bg-white/20 dark:bg-gray-800/20 backdrop-blur-sm ${getStatusColor(status)}`}
             >
-              <div className="text-4xl font-bold mb-2">{item.blood_type}</div>
-              <div className="text-2xl font-semibold mb-2">{item.units}</div>
-              <div className="text-sm opacity-80">units available</div>
+              <div className="text-4xl font-bold mb-2 dark:text-gray-200">{item.blood_type}</div>
+              <div className="text-2xl font-semibold mb-2 dark:text-gray-200">{item.units}</div>
+              <div className="text-sm opacity-80 dark:text-gray-400">units available</div>
               {status === 'critical' && (
-                <div className="mt-2 text-xs font-semibold text-red-600">
+                <div className="mt-2 text-xs font-semibold text-red-600 dark:text-red-400">
                   ⚠️ Low Stock
                 </div>
               )}
               {status === 'low' && (
-                <div className="mt-2 text-xs font-semibold text-yellow-600">
+                <div className="mt-2 text-xs font-semibold text-yellow-600 dark:text-yellow-400">
                   ⚠️ Running Low
                 </div>
               )}
@@ -106,7 +106,7 @@ export default function BloodBankTab() {
       </div>
 
       {bloodBank.length === 0 && (
-        <div className="text-center py-12 text-text">
+        <div className="text-center py-12 text-text dark:text-gray-400">
           <p>Blood bank data is not available at the moment.</p>
         </div>
       )}

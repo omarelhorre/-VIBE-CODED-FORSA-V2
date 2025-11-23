@@ -139,11 +139,11 @@ export default function AdminBloodBankTab() {
   const getStatusColor = (status) => {
     switch (status) {
       case 'critical':
-        return 'bg-red-50 border-red-300 text-red-800'
+        return 'bg-red-50 dark:bg-red-900/30 border-red-300 dark:border-red-700 text-red-800 dark:text-red-300'
       case 'low':
-        return 'bg-yellow-50 border-yellow-300 text-yellow-800'
+        return 'bg-yellow-50 dark:bg-yellow-900/30 border-yellow-300 dark:border-yellow-700 text-yellow-800 dark:text-yellow-300'
       default:
-        return 'bg-green-50 border-green-300 text-green-800'
+        return 'bg-green-50 dark:bg-green-900/30 border-green-300 dark:border-green-700 text-green-800 dark:text-green-300'
     }
   }
 
@@ -158,12 +158,12 @@ export default function AdminBloodBankTab() {
   return (
     <div>
       <div className="mb-6">
-        <h2 className="text-2xl font-bold text-secondary mb-2">Blood Bank Management</h2>
-        <p className="text-text">Update blood type inventory for your hospital</p>
+        <h2 className="text-2xl font-bold text-red-600 dark:text-red-500 mb-2">Blood Bank Management</h2>
+        <p className="text-text dark:text-gray-300">Update blood type inventory for your hospital</p>
       </div>
 
       {error && (
-        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6">
+        <div className="bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 px-4 py-3 rounded-lg mb-6">
           {error}
         </div>
       )}
@@ -178,7 +178,7 @@ export default function AdminBloodBankTab() {
               key={item.id}
               className={`border-2 rounded-xl p-6 text-center ${getStatusColor(status)}`}
             >
-              <div className="text-4xl font-bold mb-2">{item.blood_type}</div>
+              <div className="text-4xl font-bold mb-2 dark:text-gray-200">{item.blood_type}</div>
               
               {isEditing ? (
                 <div className="space-y-3">
@@ -187,7 +187,7 @@ export default function AdminBloodBankTab() {
                     min="0"
                     value={units}
                     onChange={(e) => setUnits(e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-center text-lg font-semibold focus:ring-2 focus:ring-primary focus:border-transparent outline-none"
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-800/50 dark:text-gray-200 rounded-lg text-center text-lg font-semibold focus:ring-2 focus:ring-primary focus:border-transparent outline-none"
                     placeholder="Units"
                     autoFocus
                   />
@@ -195,14 +195,14 @@ export default function AdminBloodBankTab() {
                     <button
                       onClick={handleCancel}
                       disabled={saving}
-                      className="flex-1 px-3 py-2 border border-gray-300 text-text rounded-lg hover:bg-gray-50 transition-colors text-sm font-medium disabled:opacity-50"
+                      className="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 text-text dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-sm font-medium disabled:opacity-50"
                     >
                       Cancel
                     </button>
                     <button
                       onClick={handleSave}
                       disabled={saving}
-                      className="flex-1 px-3 py-2 bg-gradient-to-r from-primary to-accent text-white rounded-lg hover:shadow-lg transition-all text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+                      className="flex-1 px-3 py-2 bg-gradient-to-r from-red-600 to-red-700 text-white rounded-lg hover:shadow-lg transition-all text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
                     >
                       {saving ? (
                         <>
@@ -217,21 +217,21 @@ export default function AdminBloodBankTab() {
                 </div>
               ) : (
                 <>
-                  <div className="text-2xl font-semibold mb-2">{item.units}</div>
-                  <div className="text-sm opacity-80 mb-3">units available</div>
+                  <div className="text-2xl font-semibold mb-2 dark:text-gray-200">{item.units}</div>
+                  <div className="text-sm opacity-80 dark:text-gray-400 mb-3">units available</div>
                   <button
                     onClick={() => handleEditClick(item)}
-                    className="px-4 py-2 bg-gradient-to-r from-primary to-accent text-white rounded-lg hover:shadow-lg transition-all font-medium text-sm w-full"
+                    className="px-4 py-2 bg-gradient-to-r from-red-600 to-red-700 text-white rounded-lg hover:shadow-lg transition-all font-medium text-sm w-full"
                   >
                     Update Units
                   </button>
                   {status === 'critical' && (
-                    <div className="mt-2 text-xs font-semibold text-red-600">
+                    <div className="mt-2 text-xs font-semibold text-red-600 dark:text-red-400">
                       ⚠️ Low Stock
                     </div>
                   )}
                   {status === 'low' && (
-                    <div className="mt-2 text-xs font-semibold text-yellow-600">
+                    <div className="mt-2 text-xs font-semibold text-yellow-600 dark:text-yellow-400">
                       ⚠️ Running Low
                     </div>
                   )}
@@ -243,7 +243,7 @@ export default function AdminBloodBankTab() {
       </div>
 
       {bloodBank.length === 0 && (
-        <div className="text-center py-12 text-text">
+        <div className="text-center py-12 text-text dark:text-gray-400">
           <p>Blood bank data is not available at the moment.</p>
         </div>
       )}

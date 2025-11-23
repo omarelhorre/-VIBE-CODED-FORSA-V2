@@ -31,15 +31,15 @@ export default function Dashboard() {
   ]
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-primary/3 to-accent/5">
+    <div className="min-h-screen bg-gradient-to-br from-background via-primary/3 to-accent/5 dark:from-gray-900 dark:via-primary/5 dark:to-accent/10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8">
           <div className="flex justify-between items-start mb-4 flex-wrap gap-4">
             <div>
-              <h1 className="text-5xl font-bold bg-gradient-to-r from-secondary via-primary to-accent bg-clip-text text-transparent mb-3">
+              <h1 className="text-5xl font-bold bg-gradient-to-r from-secondary via-primary to-accent dark:from-primary dark:via-accent dark:to-primary bg-clip-text text-transparent mb-3">
                 Patient Dashboard
               </h1>
-              <p className="text-text/80 text-lg">Manage your appointments and view hospital information</p>
+              <p className="text-text/80 dark:text-gray-300 text-lg">Manage your appointments and view hospital information</p>
             </div>
             <button
               onClick={handleRequestHelpClick}
@@ -57,7 +57,7 @@ export default function Dashboard() {
         />
 
         {/* Tab Navigation */}
-        <div className="bg-gradient-to-br from-white/90 to-white/70 backdrop-blur-md rounded-2xl shadow-xl mb-6 border border-primary/20 overflow-hidden">
+        <div className="bg-gradient-to-br from-white/90 to-white/70 dark:from-gray-800/90 dark:to-gray-800/70 backdrop-blur-md rounded-2xl shadow-xl dark:shadow-2xl mb-6 border border-primary/20 dark:border-gray-700/50 overflow-hidden">
           <div className="flex">
             {tabs.map((tab) => (
               <button
@@ -65,8 +65,8 @@ export default function Dashboard() {
                 onClick={() => setActiveTab(tab.id)}
                 className={`flex-1 px-6 py-5 text-center font-semibold transition-all relative ${
                   activeTab === tab.id
-                    ? 'text-primary bg-gradient-to-b from-primary/10 to-transparent'
-                    : 'text-text/70 hover:text-primary hover:bg-primary/5'
+                    ? 'text-primary dark:text-primary bg-gradient-to-b from-primary/10 to-transparent dark:from-primary/20'
+                    : 'text-text/70 dark:text-gray-400 hover:text-primary dark:hover:text-primary hover:bg-primary/5 dark:hover:bg-primary/10'
                 }`}
               >
                 {tab.label}
@@ -79,7 +79,7 @@ export default function Dashboard() {
         </div>
 
         {/* Tab Content */}
-        <div className="bg-gradient-to-br from-white/30 to-white/20 backdrop-blur-md rounded-2xl shadow-lg p-8 border border-primary/10 animate-fade-in">
+        <div className="bg-gradient-to-br from-white/30 to-white/20 dark:from-gray-800/30 dark:to-gray-800/20 backdrop-blur-md rounded-2xl shadow-lg p-8 border border-primary/10 dark:border-gray-700/30 animate-fade-in">
           {activeTab === 'waiting' && <WaitingListTab />}
           {activeTab === 'blood' && <BloodBankTab />}
           {activeTab === 'doctors' && <DoctorsTab />}

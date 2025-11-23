@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { createPortal } from 'react-dom'
 import { useAuth } from '../../contexts/AuthContext'
 import { useNavigate, useParams } from 'react-router-dom'
 import { supabase } from '../../lib/supabaseClient'
@@ -8,17 +9,26 @@ import LoadingSpinner from '../common/LoadingSpinner'
 function Modal({ isOpen, onClose, title, children }) {
   if (!isOpen) return null;
 
-  return (
-    <div className="fixed inset-0 bg-black/70 backdrop-blur-md flex items-center justify-center z-50 p-4" onClick={onClose}>
-      <div className="bg-white rounded-2xl shadow-xl max-w-md w-full p-6" onClick={(e) => e.stopPropagation()}>
+  const modalContent = (
+    <div 
+      className="fixed inset-0 bg-black/70 dark:bg-black/80 backdrop-blur-md flex items-center justify-center z-[100] p-4 overflow-y-auto"
+      onClick={onClose}
+      style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, width: '100vw', height: '100vh' }}
+    >
+      <div 
+        className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl dark:shadow-2xl max-w-2xl w-full p-6 border border-gray-200 dark:border-gray-700 my-8 relative z-[101] max-h-[90vh] overflow-y-auto" 
+        onClick={(e) => e.stopPropagation()}
+      >
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-bold text-secondary">{title}</h2>
-          <button onClick={onClose} className="text-text hover:text-primary text-2xl">×</button>
+          <h2 className="text-2xl font-bold text-secondary dark:text-gray-200">{title}</h2>
+          <button onClick={onClose} className="text-text dark:text-gray-300 hover:text-primary dark:hover:text-primary text-2xl">×</button>
         </div>
         {children}
       </div>
     </div>
   );
+
+  return createPortal(modalContent, document.body);
 }
 
 export default function ReviewForm({ onClose, onSuccess }) {
@@ -58,6 +68,7 @@ export default function ReviewForm({ onClose, onSuccess }) {
       setDoctors(data || [])
     } catch (error) {
       console.error('Error fetching doctors:', error)
+      setDoctors([])
     } finally {
       setLoadingDoctors(false)
     }
@@ -76,6 +87,12 @@ export default function ReviewForm({ onClose, onSuccess }) {
     try {
       if (!formData.content.trim()) {
         setError('Please enter review content')
+        setSubmitting(false)
+        return
+      }
+
+      if (!formData.rating) {
+        setError('Please select a rating')
         setSubmitting(false)
         return
       }
@@ -136,7 +153,7 @@ export default function ReviewForm({ onClose, onSuccess }) {
   return (
     <Modal isOpen={true} onClose={onClose} title="Submit Review">
       {error && (
-        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-4">
+        <div className="bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 px-4 py-3 rounded-lg mb-4">
           {error}
         </div>
       )}
@@ -147,7 +164,7 @@ export default function ReviewForm({ onClose, onSuccess }) {
       ) : (
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label htmlFor="reviewer_name" className="block text-sm font-medium text-text mb-2">
+            <label htmlFor="reviewer_name" className="block text-sm font-medium text-text dark:text-gray-300 mb-2">
               Your Name
             </label>
             <input
@@ -157,16 +174,16 @@ export default function ReviewForm({ onClose, onSuccess }) {
               value={formData.reviewer_name}
               onChange={handleChange}
               placeholder={user.email?.split('@')[0] || 'Optional'}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none"
+              className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-800/50 dark:text-gray-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none"
             />
           </div>
 
           <div>
-            <label htmlFor="doctor_id" className="block text-sm font-medium text-text mb-2">
+            <label htmlFor="doctor_id" className="block text-sm font-medium text-text dark:text-gray-300 mb-2">
               Review a Doctor (Optional)
             </label>
             {loadingDoctors ? (
-              <div className="w-full px-4 py-3 border border-gray-300 rounded-lg flex items-center justify-center">
+              <div className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-800/50 rounded-lg flex items-center justify-center">
                 <LoadingSpinner />
               </div>
             ) : (
@@ -175,7 +192,7 @@ export default function ReviewForm({ onClose, onSuccess }) {
                 name="doctor_id"
                 value={formData.doctor_id}
                 onChange={handleChange}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none"
+                className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-800/50 dark:text-gray-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none"
               >
                 <option value="">General Hospital Review</option>
                 {doctors.map((doctor) => (
@@ -188,17 +205,18 @@ export default function ReviewForm({ onClose, onSuccess }) {
           </div>
 
           <div>
-            <label htmlFor="rating" className="block text-sm font-medium text-text mb-2">
-              Rating (1-5)
+            <label htmlFor="rating" className="block text-sm font-medium text-text dark:text-gray-300 mb-2">
+              Rating (1-5) *
             </label>
             <select
               id="rating"
               name="rating"
               value={formData.rating}
               onChange={handleChange}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none"
+              required
+              className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-800/50 dark:text-gray-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none"
             >
-              <option value="">No rating</option>
+              <option value="">Select a rating</option>
               <option value="5">5 - Excellent</option>
               <option value="4">4 - Very Good</option>
               <option value="3">3 - Good</option>
@@ -208,7 +226,7 @@ export default function ReviewForm({ onClose, onSuccess }) {
           </div>
 
           <div>
-            <label htmlFor="content" className="block text-sm font-medium text-text mb-2">
+            <label htmlFor="content" className="block text-sm font-medium text-text dark:text-gray-300 mb-2">
               Review Content *
             </label>
             <textarea
@@ -219,7 +237,7 @@ export default function ReviewForm({ onClose, onSuccess }) {
               required
               rows={6}
               placeholder="Write your review here..."
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none resize-none"
+              className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-800/50 dark:text-gray-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none resize-none"
             />
           </div>
 
@@ -227,7 +245,7 @@ export default function ReviewForm({ onClose, onSuccess }) {
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 px-4 py-3 border border-gray-300 text-text rounded-lg hover:bg-gray-50 transition-colors"
+              className="flex-1 px-4 py-3 border border-gray-300 dark:border-gray-600 text-text dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
             >
               Cancel
             </button>

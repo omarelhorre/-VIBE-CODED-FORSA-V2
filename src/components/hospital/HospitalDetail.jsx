@@ -42,10 +42,10 @@ export default function HospitalDetail() {
 
   if (!hospital) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center bg-background dark:bg-gray-900">
         <div className="text-center">
-          <h1 className="text-4xl font-bold text-secondary mb-4">Hospital Not Found</h1>
-          <a href="/" className="text-primary hover:text-accent">
+          <h1 className="text-4xl font-bold text-secondary dark:text-gray-200 mb-4">Hospital Not Found</h1>
+          <a href="/" className="text-primary dark:text-primary hover:text-accent">
             Return to Home
           </a>
         </div>
@@ -54,17 +54,14 @@ export default function HospitalDetail() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background dark:bg-gray-900">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="text-center mb-12">
-          <div className="w-24 h-24 bg-gradient-to-br from-primary to-accent rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-2xl">
-            <i className="fas fa-hospital text-white text-5xl"></i>
-          </div>
-          <h1 className="text-5xl font-bold bg-gradient-to-r from-secondary via-primary to-accent bg-clip-text text-transparent mb-4">
-            {hospital.name}
+          <h1 className="text-5xl font-bold bg-gradient-to-r from-secondary via-primary to-accent dark:from-primary dark:via-accent dark:to-primary bg-clip-text text-transparent mb-4">
+            Welcome to {hospital.name}
           </h1>
-          <p className="text-xl text-text mb-2">{hospital.location}</p>
-          <p className="text-text">{hospital.description}</p>
+          <p className="text-xl text-text dark:text-gray-300 mb-2">{hospital.location}</p>
+          <p className="text-text dark:text-gray-400">{hospital.description}</p>
         </div>
         <Dashboard />
       </div>

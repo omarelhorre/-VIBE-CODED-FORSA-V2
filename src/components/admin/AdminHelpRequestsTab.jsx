@@ -160,16 +160,16 @@ export default function AdminHelpRequestsTab() {
 
   const getStatusBadge = (status) => {
     const statusColors = {
-      pending: 'bg-yellow-100 text-yellow-800 border-yellow-300',
-      'in-progress': 'bg-blue-100 text-blue-800 border-blue-300',
-      resolved: 'bg-green-100 text-green-800 border-green-300',
-      cancelled: 'bg-red-100 text-red-800 border-red-300',
+      pending: 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-300 border-yellow-300 dark:border-yellow-700',
+      'in-progress': 'bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300 border-blue-300 dark:border-blue-700',
+      resolved: 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300 border-green-300 dark:border-green-700',
+      cancelled: 'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300 border-red-300 dark:border-red-700',
     }
 
     return (
       <span
         className={`px-3 py-1 rounded-full text-xs font-semibold border ${
-          statusColors[status] || 'bg-gray-100 text-gray-800 border-gray-300'
+          statusColors[status] || 'bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-300 border-gray-300 dark:border-gray-600'
         }`}
       >
         {status?.toUpperCase() || 'UNKNOWN'}
@@ -200,24 +200,24 @@ export default function AdminHelpRequestsTab() {
   return (
     <div>
       <div className="mb-6">
-        <h2 className="text-2xl font-bold text-secondary mb-2">Help Requests</h2>
-        <p className="text-text">View and manage patient help requests</p>
+        <h2 className="text-2xl font-bold text-red-600 dark:text-red-500 mb-2">Help Requests</h2>
+        <p className="text-text dark:text-gray-300">View and manage patient help requests</p>
       </div>
 
       {error && (
-        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6">
+        <div className="bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 px-4 py-3 rounded-lg mb-6">
           {error}
         </div>
       )}
 
       {helpRequests.length === 0 ? (
-        <div className="text-center py-12 text-text">
-          <i className="fas fa-inbox text-6xl text-gray-300 mb-4"></i>
+        <div className="text-center py-12 text-text dark:text-gray-400">
+          <i className="fas fa-inbox text-6xl text-gray-300 dark:text-gray-600 mb-4"></i>
           <p className="text-lg">No help requests at this time.</p>
         </div>
       ) : (
         <div className="overflow-x-auto">
-          <table className="min-w-full bg-white rounded-lg shadow-sm border border-gray-200">
+          <table className="min-w-full bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
             <thead className="bg-gradient-to-r from-red-600 to-red-700 text-white">
               <tr>
                 <th className="px-6 py-4 text-left text-sm font-semibold">Patient Name</th>
@@ -228,29 +228,29 @@ export default function AdminHelpRequestsTab() {
                 <th className="px-6 py-4 text-left text-sm font-semibold">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-200">
+            <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
               {helpRequests.map((request) => (
-                <tr key={request.id} className="hover:bg-gray-50 transition-colors">
+                <tr key={request.id} className="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm font-medium text-text">{request.patient_name}</div>
+                    <div className="text-sm font-medium text-text dark:text-gray-200">{request.patient_name}</div>
                   </td>
                   <td className="px-6 py-4">
-                    <div className="text-sm text-text max-w-xs">
+                    <div className="text-sm text-text dark:text-gray-300 max-w-xs">
                       {request.description ? (
                         <span title={request.description} className="line-clamp-2">
                           {request.description}
                         </span>
                       ) : (
-                        <span className="text-text/50 italic">No description</span>
+                        <span className="text-text/50 dark:text-gray-500 italic">No description</span>
                       )}
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">{getStatusBadge(request.status)}</td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-text">{formatDate(request.created_at)}</div>
+                    <div className="text-sm text-text dark:text-gray-300">{formatDate(request.created_at)}</div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-text">{formatDate(request.resolved_at)}</div>
+                    <div className="text-sm text-text dark:text-gray-300">{formatDate(request.resolved_at)}</div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center gap-2">
@@ -288,20 +288,20 @@ export default function AdminHelpRequestsTab() {
         </div>
       )}
 
-      <div className="mt-6 text-sm text-text">
+      <div className="mt-6 text-sm text-text dark:text-gray-300">
         <p>Total requests: <span className="font-semibold">{helpRequests.length}</span></p>
         <p>
-          Pending: <span className="font-semibold text-yellow-600">
+          Pending: <span className="font-semibold text-yellow-600 dark:text-yellow-500">
             {helpRequests.filter((r) => r.status === 'pending').length}
           </span>
         </p>
         <p>
-          In Progress: <span className="font-semibold text-blue-600">
+          In Progress: <span className="font-semibold text-blue-600 dark:text-blue-500">
             {helpRequests.filter((r) => r.status === 'in-progress').length}
           </span>
         </p>
         <p>
-          Resolved: <span className="font-semibold text-green-600">
+          Resolved: <span className="font-semibold text-green-600 dark:text-green-500">
             {helpRequests.filter((r) => r.status === 'resolved').length}
           </span>
         </p>
