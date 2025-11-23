@@ -215,9 +215,9 @@ export default function AdminWaitingList() {
                   <td className="px-6 py-4 whitespace-nowrap">
                     <button
                       onClick={() => handleDeleteClick(entry)}
-                      className="px-4 py-2 bg-gradient-to-r from-red-600 to-red-700 text-white rounded-lg hover:shadow-lg transition-all font-medium text-sm"
+                      className="px-4 py-2 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg hover:shadow-lg transition-all font-medium text-sm"
                     >
-                      Delete
+                      Pull from waiting list
                     </button>
                   </td>
                 </tr>
@@ -232,13 +232,13 @@ export default function AdminWaitingList() {
         <div className="fixed top-0 left-0 right-0 bottom-0 w-screen h-screen bg-black/70 dark:bg-black/80 backdrop-blur-md flex items-center justify-center z-50 p-4">
           <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl max-w-md w-full p-6 border border-gray-200 dark:border-gray-700">
             <div className="mb-6">
-              <h2 className="text-2xl font-bold text-secondary dark:text-gray-200 mb-2">Confirm Deletion</h2>
+              <h2 className="text-2xl font-bold text-secondary dark:text-gray-200 mb-2">Pull from Waiting List</h2>
               <p className="text-text dark:text-gray-300">
-                Are you sure you want to delete the waiting list entry for{' '}
-                <span className="font-semibold">{deleteConfirm.patient_name}</span>?
+                Are you sure you want to pull{' '}
+                <span className="font-semibold">{deleteConfirm.patient_name}</span> from the waiting list?
               </p>
               <p className="text-sm text-text/70 dark:text-gray-400 mt-2">
-                This action cannot be undone.
+                This will remove the patient from the waiting list.
               </p>
             </div>
             <div className="flex space-x-3">
@@ -252,15 +252,15 @@ export default function AdminWaitingList() {
               <button
                 onClick={handleDeleteConfirm}
                 disabled={deleting}
-                className="flex-1 px-4 py-3 bg-gradient-to-r from-red-600 to-red-700 text-white rounded-lg hover:shadow-lg transition-all font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+                className="flex-1 px-4 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg hover:shadow-lg transition-all font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
               >
                 {deleting ? (
                   <>
                     <LoadingSpinner size="sm" />
-                    <span className="ml-2">Deleting...</span>
+                    <span className="ml-2">Pulling...</span>
                   </>
                 ) : (
-                  'Confirm Delete'
+                  'Confirm Pull'
                 )}
               </button>
             </div>

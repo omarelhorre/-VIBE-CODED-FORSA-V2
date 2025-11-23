@@ -6,15 +6,17 @@ import LoadingSpinner from '../common/LoadingSpinner'
 export default function AdminHelpRequestsTab() {
   const { user } = useAuth()
   const [helpRequests, setHelpRequests] = useState([])
+  const [ambulanceAvailability, setAmbulanceAvailability] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [updating, setUpdating] = useState(false)
 
   useEffect(() => {
     fetchHelpRequests()
+    fetchAmbulanceAvailability()
 
-    // Set up real-time subscription
-    const subscription = supabase
+    // Set up real-time subscriptions
+    const helpSubscription = supabase
       .channel('admin_help_requests_changes')
       .on(
         'postgres_changes',
@@ -29,10 +31,68 @@ export default function AdminHelpRequestsTab() {
       )
       .subscribe()
 
+    const availabilitySubscription = supabase
+      .channel('admin_help_ambulance_availability_changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'ambulance_availability',
+        },
+        () => {
+          fetchAmbulanceAvailability()
+        }
+      )
+      .subscribe()
+
     return () => {
-      subscription.unsubscribe()
+      helpSubscription.unsubscribe()
+      availabilitySubscription.unsubscribe()
     }
   }, [])
+
+  const getCurrentHospitalId = () => {
+    if (user) {
+      if (user.hospital) return user.hospital
+      if (user.user_metadata?.hospital) return user.user_metadata.hospital
+    }
+    return null
+  }
+
+  const fetchAmbulanceAvailability = async () => {
+    try {
+      const currentHospitalId = getCurrentHospitalId()
+      if (!currentHospitalId) return
+
+      let { data, error } = await supabase
+        .from('ambulance_availability')
+        .select('*')
+        .eq('hospital_id', currentHospitalId)
+        .single()
+
+      if (error && error.code === 'PGRST116') {
+        // No row found, initialize with default 10
+        const { data: insertData, error: insertError } = await supabase
+          .from('ambulance_availability')
+          .insert({
+            hospital_id: currentHospitalId,
+            available_count: 10,
+            total_count: 10
+          })
+          .select()
+          .single()
+
+        if (!insertError) {
+          setAmbulanceAvailability(insertData)
+        }
+      } else if (!error && data) {
+        setAmbulanceAvailability(data)
+      }
+    } catch (error) {
+      console.error('Error fetching ambulance availability:', error)
+    }
+  }
 
   const fetchHelpRequests = async () => {
     try {
@@ -101,12 +161,56 @@ export default function AdminHelpRequestsTab() {
     setError('')
 
     try {
+      const currentHospitalId = getCurrentHospitalId()
       const updateData = {
         status: newStatus
       }
 
+      // If starting a help request, dispatch an ambulance
+      if (newStatus === 'in-progress') {
+        // Check availability
+        const availability = ambulanceAvailability
+        if (!availability || availability.available_count <= 0) {
+          setError('No ambulances available. Cannot start help request.')
+          setUpdating(false)
+          return
+        }
+
+        // Decrease available count
+        const { error: availabilityError } = await supabase
+          .from('ambulance_availability')
+          .update({
+            available_count: availability.available_count - 1,
+            updated_at: new Date().toISOString()
+          })
+          .eq('hospital_id', currentHospitalId)
+
+        if (availabilityError) {
+          console.error('Error updating ambulance availability:', availabilityError)
+          throw new Error('Failed to dispatch ambulance')
+        }
+      }
+
+      // If resolving, return ambulance
       if (newStatus === 'resolved') {
         updateData.resolved_at = new Date().toISOString()
+        
+        // Increase available count (ambulance returns)
+        const availability = ambulanceAvailability
+        if (availability && currentHospitalId) {
+          const { error: availabilityError } = await supabase
+            .from('ambulance_availability')
+            .update({
+              available_count: Math.min(availability.total_count, availability.available_count + 1),
+              updated_at: new Date().toISOString()
+            })
+            .eq('hospital_id', currentHospitalId)
+
+          if (availabilityError) {
+            console.error('Error returning ambulance:', availabilityError)
+            // Don't throw, just log - the help request should still be resolved
+          }
+        }
       }
 
       const { error: updateError } = await supabase
@@ -119,8 +223,8 @@ export default function AdminHelpRequestsTab() {
         throw updateError
       }
 
-      // Refresh the list
-      fetchHelpRequests()
+      // Refresh the list and availability
+      await Promise.all([fetchHelpRequests(), fetchAmbulanceAvailability()])
     } catch (error) {
       console.error('Error updating help request:', error)
       setError(`Failed to update request: ${error.message || 'Please try again.'}`)
@@ -129,8 +233,8 @@ export default function AdminHelpRequestsTab() {
     }
   }
 
-  const handleDelete = async (requestId) => {
-    if (!window.confirm('Are you sure you want to delete this help request?')) {
+  const handleReject = async (requestId) => {
+    if (!window.confirm('Are you sure you want to reject this help request?')) {
       return
     }
 
@@ -138,21 +242,24 @@ export default function AdminHelpRequestsTab() {
     setError('')
 
     try {
-      const { error: deleteError } = await supabase
+      const { error: updateError } = await supabase
         .from('help_requests')
-        .delete()
+        .update({
+          status: 'cancelled',
+          updated_at: new Date().toISOString()
+        })
         .eq('id', requestId)
 
-      if (deleteError) {
-        console.error('Delete error:', deleteError)
-        throw deleteError
+      if (updateError) {
+        console.error('Reject error:', updateError)
+        throw updateError
       }
 
       // Refresh the list
       fetchHelpRequests()
     } catch (error) {
-      console.error('Error deleting help request:', error)
-      setError(`Failed to delete request: ${error.message || 'Please try again.'}`)
+      console.error('Error rejecting help request:', error)
+      setError(`Failed to reject request: ${error.message || 'Please try again.'}`)
     } finally {
       setUpdating(false)
     }
@@ -197,11 +304,38 @@ export default function AdminHelpRequestsTab() {
     )
   }
 
+  const availableCount = ambulanceAvailability?.available_count ?? 10
+  const totalCount = ambulanceAvailability?.total_count ?? 10
+
   return (
     <div>
       <div className="mb-6">
         <h2 className="text-2xl font-bold text-red-600 dark:text-red-500 mb-2">Help Requests</h2>
         <p className="text-text dark:text-gray-300">View and manage patient help requests</p>
+      </div>
+
+      {/* Ambulance Availability Info */}
+      <div className="bg-gradient-to-br from-white/90 to-white/70 dark:from-gray-800/90 dark:to-gray-800/70 backdrop-blur-md rounded-2xl shadow-xl dark:shadow-2xl p-4 mb-6 border border-red-200/30 dark:border-red-900/50">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <i className={`fas fa-ambulance text-2xl ${
+              availableCount === 0 
+                ? 'text-red-600 dark:text-red-500' 
+                : availableCount <= 3 
+                ? 'text-yellow-600 dark:text-yellow-500' 
+                : 'text-green-600 dark:text-green-500'
+            }`}></i>
+            <div>
+              <div className="text-sm text-text/70 dark:text-gray-400">Ambulance Availability</div>
+              <div className="text-lg font-semibold text-text dark:text-gray-200">
+                {availableCount} / {totalCount} available
+              </div>
+            </div>
+          </div>
+          <div className="text-xs text-text/60 dark:text-gray-500">
+            Starting a help request dispatches an ambulance
+          </div>
+        </div>
       </div>
 
       {error && (
@@ -255,13 +389,23 @@ export default function AdminHelpRequestsTab() {
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center gap-2">
                       {request.status === 'pending' && (
-                        <button
-                          onClick={() => handleStatusUpdate(request.id, 'in-progress')}
-                          disabled={updating}
-                          className="px-3 py-1 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all text-sm font-medium disabled:opacity-50"
-                        >
-                          Start
-                        </button>
+                        <>
+                          <button
+                            onClick={() => handleStatusUpdate(request.id, 'in-progress')}
+                            disabled={updating || availableCount === 0}
+                            className="px-3 py-1 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-all text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                            title={availableCount === 0 ? 'No ambulances available' : 'Accept help request and dispatch ambulance'}
+                          >
+                            Accept
+                          </button>
+                          <button
+                            onClick={() => handleReject(request.id)}
+                            disabled={updating}
+                            className="px-3 py-1 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-all text-sm font-medium disabled:opacity-50"
+                          >
+                            Reject
+                          </button>
+                        </>
                       )}
                       {request.status === 'in-progress' && (
                         <button
@@ -272,13 +416,6 @@ export default function AdminHelpRequestsTab() {
                           Resolve
                         </button>
                       )}
-                      <button
-                        onClick={() => handleDelete(request.id)}
-                        disabled={updating}
-                        className="px-3 py-1 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-all text-sm font-medium disabled:opacity-50"
-                      >
-                        Delete
-                      </button>
                     </div>
                   </td>
                 </tr>

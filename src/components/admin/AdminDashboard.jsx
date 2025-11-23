@@ -3,6 +3,7 @@ import { useAuth } from '../../contexts/AuthContext'
 import AdminWaitingList from './AdminWaitingList'
 import AdminBloodBankTab from './AdminBloodBankTab'
 import AdminHelpRequestsTab from './AdminHelpRequestsTab'
+import AdminAmbulanceTab from './AdminAmbulanceTab'
 import AdminForsaPlusTab from './AdminForsaPlusTab'
 
 export default function AdminDashboard() {
@@ -14,6 +15,7 @@ export default function AdminDashboard() {
     { id: 'waiting', label: 'Waiting List' },
     { id: 'blood', label: 'Blood Bank' },
     { id: 'help', label: 'Help Requests' },
+    { id: 'ambulance', label: 'Ambulances' },
     { id: 'forsa-plus', label: 'Forsa+' },
   ]
 
@@ -64,6 +66,7 @@ export default function AdminDashboard() {
           {activeTab === 'waiting' && <AdminWaitingList />}
           {activeTab === 'blood' && <AdminBloodBankTab />}
           {activeTab === 'help' && <AdminHelpRequestsTab />}
+          {activeTab === 'ambulance' && <AdminAmbulanceTab />}
           {activeTab === 'forsa-plus' && <AdminForsaPlusTab />}
         </div>
       </div>

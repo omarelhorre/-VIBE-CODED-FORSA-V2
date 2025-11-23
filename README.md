@@ -1,4 +1,6 @@
-# Sarii Space (Sari3) - Hospital Patient Portal
+# Forsa - Hospital Patient Portal
+
+> **Note: This is the presented version of the project.**
 
 A modern, multi-hospital patient portal web application for hospitals in Tetouan, Morocco. Built with React, Vite, Tailwind CSS, and Supabase. This platform allows patients to manage appointments, view hospital information, submit reviews, request help, and enables administrators to manage hospital operations.
 
@@ -380,8 +382,18 @@ MIT
 
 ## 🔄 Version
 
-**Version 2.0** - Multi-hospital support with reviews, help requests, and comprehensive admin management
+**Version 2.0** - Multi-hospital support with reviews, help requests, ambulance management, and comprehensive admin management
+
+### Recent Updates
+- ✅ Ambulance management system with availability tracking
+- ✅ Integrated help requests with ambulance dispatch
+- ✅ Enhanced admin dashboard with ambulance and help request management
+- ✅ Improved UI/UX with dark mode support
+- ✅ Fixed queue joining issues and modal positioning
+- ✅ Updated button labels (Accept/Reject for help requests, Pull from waiting list)
 
 ---
 
 **Copyright © 2025-2026**
+
+**This is the presented version of the Forsa Hospital Patient Portal project.**

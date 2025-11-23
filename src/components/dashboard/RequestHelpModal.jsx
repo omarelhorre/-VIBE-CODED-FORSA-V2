@@ -33,6 +33,11 @@ export default function RequestHelpModal({ isOpen, onClose }) {
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState('')
   const [description, setDescription] = useState('')
+  const [requestType, setRequestType] = useState('help') // 'help' or 'ambulance'
+  const [ambulanceLocation, setAmbulanceLocation] = useState('')
+  const [patientName, setPatientName] = useState('')
+  const [availability, setAvailability] = useState(null)
+  const [checkingAvailability, setCheckingAvailability] = useState(false)
 
   // Check authentication when modal opens
   useEffect(() => {
@@ -42,6 +47,45 @@ export default function RequestHelpModal({ isOpen, onClose }) {
       onClose()
     }
   }, [isOpen, user, authLoading, navigate, location.pathname, onClose])
+
+  // Check ambulance availability when request type changes to ambulance
+  useEffect(() => {
+    if (isOpen && requestType === 'ambulance') {
+      checkAmbulanceAvailability()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isOpen, requestType])
+
+  const checkAmbulanceAvailability = async () => {
+    setCheckingAvailability(true)
+    try {
+      const currentHospitalId = hospitalId || user?.hospital || user?.user_metadata?.hospital
+      if (!currentHospitalId) {
+        setAvailability({ available_count: 0, total_count: 10 })
+        setCheckingAvailability(false)
+        return
+      }
+
+      let { data, error } = await supabase
+        .from('ambulance_availability')
+        .select('*')
+        .eq('hospital_id', currentHospitalId)
+        .single()
+
+      if (error && error.code === 'PGRST116') {
+        setAvailability({ available_count: 10, total_count: 10 })
+      } else if (error) {
+        throw error
+      } else {
+        setAvailability(data || { available_count: 10, total_count: 10 })
+      }
+    } catch (error) {
+      console.error('Error checking availability:', error)
+      setAvailability({ available_count: 10, total_count: 10 })
+    } finally {
+      setCheckingAvailability(false)
+    }
+  }
 
   // Get hospital name
   const hospitals = {
@@ -80,25 +124,67 @@ export default function RequestHelpModal({ isOpen, onClose }) {
     setError('')
 
     try {
-      const patientName = user?.email?.split('@')[0] || user?.user_metadata?.full_name || 'Patient'
+      const name = requestType === 'ambulance' 
+        ? (patientName.trim() || user?.email?.split('@')[0] || user?.user_metadata?.full_name || 'Patient')
+        : (user?.email?.split('@')[0] || user?.user_metadata?.full_name || 'Patient')
 
-      const { data, error: insertError } = await supabase
-        .from('help_requests')
-        .insert({
-          hospital_id: currentHospitalId,
-          patient_name: patientName,
-          description: description.trim() || null,
-          user_id: user?.id || null,
-          status: 'pending'
-        })
-        .select()
+      // If ambulance request, check availability first
+      if (requestType === 'ambulance') {
+        const currentHospitalId = hospitalId || user?.hospital || user?.user_metadata?.hospital
+        const { data: availData } = await supabase
+          .from('ambulance_availability')
+          .select('available_count')
+          .eq('hospital_id', currentHospitalId)
+          .single()
 
-      if (insertError) {
-        console.error('Error submitting help request:', insertError)
-        throw insertError
+        const availableCount = availData?.available_count ?? 10
+        if (availableCount <= 0) {
+          setError('No ambulances available at this time. Please try again later.')
+          setSubmitting(false)
+          await checkAmbulanceAvailability()
+          return
+        }
+
+        // Submit ambulance request
+        const { data, error: insertError } = await supabase
+          .from('ambulance_requests')
+          .insert({
+            hospital_id: currentHospitalId,
+            user_id: user?.id || null,
+            patient_name: name,
+            location: ambulanceLocation.trim() || null,
+            description: description.trim() || null,
+            status: 'pending'
+          })
+          .select()
+
+        if (insertError) {
+          console.error('Error submitting ambulance request:', insertError)
+          throw insertError
+        }
+
+        console.log('Ambulance request submitted successfully:', data)
+      } else {
+        // Submit help request
+        const { data, error: insertError } = await supabase
+          .from('help_requests')
+          .insert({
+            hospital_id: currentHospitalId,
+            patient_name: name,
+            description: description.trim() || null,
+            user_id: user?.id || null,
+            status: 'pending'
+          })
+          .select()
+
+        if (insertError) {
+          console.error('Error submitting help request:', insertError)
+          throw insertError
+        }
+
+        console.log('Help request submitted successfully:', data)
       }
 
-      console.log('Help request submitted successfully:', data)
       setShowConfirmation(false)
       setShowSuccess(true)
       // Auto-close after 3 seconds
@@ -106,8 +192,8 @@ export default function RequestHelpModal({ isOpen, onClose }) {
         handleClose()
       }, 3000)
     } catch (err) {
-      console.error('Error submitting help request:', err)
-      setError(`Failed to submit help request: ${err.message || 'Please try again.'}`)
+      console.error('Error submitting request:', err)
+      setError(`Failed to submit request: ${err.message || 'Please try again.'}`)
     } finally {
       setSubmitting(false)
     }
@@ -124,6 +210,9 @@ export default function RequestHelpModal({ isOpen, onClose }) {
     setShowSuccess(false)
     setError('')
     setDescription('')
+    setAmbulanceLocation('')
+    setPatientName('')
+    setRequestType('help')
     onClose()
   }
 
@@ -162,20 +251,34 @@ export default function RequestHelpModal({ isOpen, onClose }) {
         <div>
           <div className="text-center mb-6">
             <div className="w-20 h-20 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
-              <i className="fas fa-exclamation-triangle text-red-600 dark:text-red-400 text-4xl"></i>
+              <i className={`fas ${requestType === 'ambulance' ? 'fa-ambulance' : 'fa-exclamation-triangle'} text-red-600 dark:text-red-400 text-4xl`}></i>
             </div>
             
             <h2 className="text-2xl font-bold text-secondary dark:text-gray-200 mb-4">
-              Confirm Help Request
+              Confirm {requestType === 'ambulance' ? 'Ambulance' : 'Help'} Request
             </h2>
             
             <div className="mb-4">
-              <p className="text-text dark:text-gray-300 mb-2">Request help from</p>
+              <p className="text-text dark:text-gray-300 mb-2">Request from</p>
               <p className="text-2xl font-bold text-red-600 dark:text-red-500">
                 {hospitalName}
               </p>
             </div>
           </div>
+
+          {requestType === 'ambulance' && patientName && (
+            <div className="mb-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4 border border-gray-200 dark:border-gray-600">
+              <p className="text-sm font-medium text-text dark:text-gray-300 mb-2">Patient Name:</p>
+              <p className="text-sm text-text dark:text-gray-300">{patientName}</p>
+            </div>
+          )}
+
+          {requestType === 'ambulance' && ambulanceLocation && (
+            <div className="mb-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4 border border-gray-200 dark:border-gray-600">
+              <p className="text-sm font-medium text-text dark:text-gray-300 mb-2">Location:</p>
+              <p className="text-sm text-text dark:text-gray-300">{ambulanceLocation}</p>
+            </div>
+          )}
 
           {description && (
             <div className="mb-6 bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4 border border-gray-200 dark:border-gray-600">

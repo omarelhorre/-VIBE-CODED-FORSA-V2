@@ -17,13 +17,13 @@ export default function JoinQueueModal({ isOpen, onClose, department }) {
   // Check authentication before allowing queue join
   if (!user) {
     return (
-      <div className="fixed inset-0 bg-black/70 dark:bg-black/80 backdrop-blur-md flex items-center justify-center z-50 p-4">
+      <div className="fixed inset-0 bg-black/70 dark:bg-black/80 backdrop-blur-md flex items-center justify-center z-50 p-4 overflow-y-auto">
         <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl dark:shadow-2xl max-w-md w-full p-6 border border-gray-200 dark:border-gray-700">
-          <div className="flex justify-between items-center mb-6">
-            <h2 className="text-2xl font-bold text-secondary dark:text-gray-200">Authentication Required</h2>
+          <div className="flex justify-between items-start gap-4 mb-6">
+            <h2 className="text-2xl font-bold text-secondary dark:text-gray-200 flex-1 min-w-0 break-words">Authentication Required</h2>
             <button
               onClick={onClose}
-              className="text-text dark:text-gray-300 hover:text-primary dark:hover:text-primary text-2xl"
+              className="text-text dark:text-gray-300 hover:text-primary dark:hover:text-primary text-2xl flex-shrink-0"
             >
               ×
             </button>
@@ -59,20 +59,61 @@ export default function JoinQueueModal({ isOpen, onClose, department }) {
     setLoading(true)
 
     try {
-      const { error: insertError } = await supabase
+      // Validate user ID - must be a valid UUID for database
+      let userId = user.id
+      
+      // For admin users, we can't use their ID (not a valid UUID)
+      // Use the mock user ID or get current Supabase session user
+      if (user.role === 'admin') {
+        // Try to get the current Supabase session
+        const { data: { session } } = await supabase.auth.getSession()
+        if (session?.user?.id) {
+          userId = session.user.id
+        } else {
+          // For admin users without Supabase session, use mock user ID
+          userId = 'a1b2c3d4-e5f6-4789-a012-b3c4d5e6f789'
+        }
+      }
+
+      // Validate required fields
+      if (!patientName.trim()) {
+        setError('Please enter a patient name.')
+        setLoading(false)
+        return
+      }
+
+      if (!reason.trim()) {
+        setError('Please enter a reason for visit.')
+        setLoading(false)
+        return
+      }
+
+      if (!department || !department.id) {
+        setError('Invalid department selected.')
+        setLoading(false)
+        return
+      }
+
+      const { data, error: insertError } = await supabase
         .from('waiting_list')
         .insert({
-          user_id: user.id,
-          patient_name: patientName,
+          user_id: userId,
+          patient_name: patientName.trim(),
           department_id: department.id,
-          reason: reason,
+          reason: reason.trim(),
           status: 'waiting',
         })
+        .select()
 
       if (insertError) {
+        console.error('Insert error details:', insertError)
         // Provide more helpful error messages
         if (insertError.message.includes('row-level security') || insertError.message.includes('RLS')) {
           setError('Failed to join queue. Database permission error. Please check RLS policies.')
+        } else if (insertError.message.includes('foreign key') || insertError.message.includes('violates foreign key')) {
+          setError('Invalid department selected. Please try again.')
+        } else if (insertError.message.includes('null value') || insertError.message.includes('NOT NULL')) {
+          setError('Please fill in all required fields.')
         } else {
           setError(insertError.message || 'Failed to join queue. Please try again.')
         }
@@ -80,26 +121,28 @@ export default function JoinQueueModal({ isOpen, onClose, department }) {
         return
       }
 
-      // Reset form and close modal
+      // Success - reset form and close modal
       setPatientName('')
       setReason('')
+      setError('')
       onClose()
     } catch (err) {
-      setError('An error occurred. Please try again.')
+      console.error('Unexpected error:', err)
+      setError('An unexpected error occurred. Please try again.')
       setLoading(false)
     }
   }
 
   return (
-    <div className="fixed top-0 left-0 right-0 bottom-0 w-screen h-screen bg-black/70 dark:bg-black/80 backdrop-blur-md flex items-center justify-center z-50 p-4">
+    <div className="fixed inset-0 bg-black/70 dark:bg-black/80 backdrop-blur-md flex items-center justify-center z-50 p-4 overflow-y-auto">
       <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl dark:shadow-2xl max-w-md w-full p-6 border border-gray-200 dark:border-gray-700">
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-bold text-secondary dark:text-gray-200">
-            Join {department.name} Queue
+        <div className="flex justify-between items-start gap-4 mb-6">
+          <h2 className="text-2xl font-bold text-secondary dark:text-gray-200 flex-1 min-w-0 break-words">
+            Join {department?.name || 'Department'} Queue
           </h2>
           <button
             onClick={onClose}
-            className="text-text dark:text-gray-300 hover:text-primary dark:hover:text-primary text-2xl"
+            className="text-text dark:text-gray-300 hover:text-primary dark:hover:text-primary text-2xl flex-shrink-0"
           >
             ×
           </button>
