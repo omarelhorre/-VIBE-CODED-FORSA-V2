@@ -1,3 +1,7 @@
+THIS PROJECT IS FULLY VIBECODED USING CURSOR AI
+
+
+
 # Forsa - Hospital Patient Portal
 
 > **Note: This is the presented version of the project.**
